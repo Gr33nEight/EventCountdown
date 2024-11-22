@@ -13,6 +13,8 @@ struct EventForm: View {
     @State private var date: Date
     @State private var textColor: Color
     
+    @State private var showAlert = false
+    
     var onSave: (Event) -> Void
     
     init(event: Event? = nil, onSave: @escaping (Event) -> Void) {
@@ -37,19 +39,30 @@ struct EventForm: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar  {
                 Button {
-                    let finalEvent = Event(
-                        id: event?.id ?? UUID(),
-                        title: title,
-                        date: date,
-                        textColor: textColor
-                    )
-                    onSave(finalEvent)
-                    dismiss()
+                    save()
                 } label: {
                     Image(systemName: "checkmark")
                 }
 
             }
+            .alert("Title can't be empty", isPresented: $showAlert) {
+                Button("Ok", role: .cancel) {}
+            }
+    }
+    
+    private func save() {
+        if title.isEmpty {
+            showAlert = true
+        }else{
+            let finalEvent = Event(
+                id: event?.id ?? UUID(),
+                title: title,
+                date: date,
+                textColor: textColor
+            )
+            onSave(finalEvent)
+            dismiss()
+        }
     }
 }
 

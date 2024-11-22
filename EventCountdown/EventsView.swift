@@ -14,14 +14,15 @@ struct EventsView: View {
     var body: some View {
         List {
             ForEach(events.sorted()) { event in
-                NavigationLink {
-                    EventForm(event: event) { finalEvent in
-                        onEdit(finalEvent)
-                    }
-                } label: {
+                NavigationLink(value: event) {
                     EventRow(event: event)
                 }
             }.onDelete(perform: delete)
+        }
+        .navigationDestination(for: Event.self) { event in
+            EventForm(event: event) { finalEvent in
+                onEdit(finalEvent)
+            }
         }
     }
 }
